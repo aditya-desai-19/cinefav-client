@@ -1,17 +1,20 @@
 //@ts-check
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom';
+import AuthContext from '../utils/AuthContext';
 
 const Navbar = () => {
+    const { authToken } = useContext(AuthContext);
+
     return (
         <div className="flex justify-between p-2 w-full h-10">
             <h2 className="text-gray-800 text-lg">Cinefav</h2>
             <ul className="flex list-none">
-                <li>
-                    <Link to={"/signin"}>
-                        <button className='rounded-lg p-2 w-24 bg-blue-400 text-white'>Sign In</button>
+                {!authToken && <li>
+                    <Link to={"/login"}>
+                        <button className='rounded-lg p-2 w-24 bg-blue-400 text-white'>Login</button>
                     </Link>
-                </li>
+                </li>}
             </ul>
         </div>
     )
