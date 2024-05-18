@@ -1,8 +1,9 @@
 //@ts-check
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
-import Error from "./pages/Error.jsx";
+import Error from "./components/Error.jsx";
 import SignIn from "./components/SignIn.jsx";
+import Movies from "./components/Movies.jsx";
 
 const router = createBrowserRouter([
     {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
             {
                 path: '/signin',
                 element: <SignIn />,
+            },
+            {
+                path: '/movies',
+                element: <Movies />,
             }
         ]
     }, 

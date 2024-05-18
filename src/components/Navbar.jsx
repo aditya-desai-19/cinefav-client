@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     return (
-        <div className="flex justify-between p-2 w-full h-10">
+        <div className="flex justify-between p-2 h-10">
             <h2 className="text-gray-800 text-lg">Cinefav</h2>
             <ul className="flex list-none">
                 <li>
