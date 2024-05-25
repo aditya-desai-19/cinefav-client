@@ -3,18 +3,21 @@ import React, { useCallback } from 'react'
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import GeneresDropDown from './GeneresDropDown';
+import GenresDropDown from './GenresDropDown';
+import { useDispatch } from 'react-redux';
+import { clearMovies, addMovies } from '../redux/slices/movieSlice.js';
 
 const Navbar = () => {
     const { register, handleSubmit } = useForm();
+    const dispatch = useDispatch();
 
     const handleSearch = useCallback(async (data) => {
         try {
-            console.log(data)
-            const response = await axios.get("/api/search", {
+            const response = await axios.get("/api/movies/search", {
                 params: data
             });
-            console.log({response})
+            dispatch(clearMovies());
+            dispatch(addMovies(response.data.movies));
         } catch (error) {
             console.log({error})
         }
@@ -30,7 +33,7 @@ const Navbar = () => {
         <div className="flex justify-between p-2 h-16">
             <div className='flex'>
                 <h2 className="text-white text-2xl mx-2">Cinefav</h2>
-                <GeneresDropDown />
+                <GenresDropDown />
             </div>
             <ul className="flex justify-center list-none">
                 <form className='mx-2' onSubmit={handleSubmit(handleSearch)}>

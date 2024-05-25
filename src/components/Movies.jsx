@@ -2,10 +2,13 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import MovieCard from './MovieCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { addMovies, clearMovies } from '../redux/slices/movieSlice';
 
 const Movies = () => {
-    const [movies, setMovies] = useState([]);
-
+    const movies = useSelector((state) => state.movie.movies);
+    const dispatch = useDispatch();
+    
     useEffect(() => {
         callMoviesApi()
     }, []);
@@ -13,34 +16,23 @@ const Movies = () => {
     const callMoviesApi = async () => {
         try {
             const response = await axios.get("/api/movies");
-            setMovies(response.data.movies || []);
+            dispatch(clearMovies());
+            dispatch(addMovies(response.data.movies || []));
         } catch (error) {
             console.log({ error })
         }
     }
 
-    const limitMovieTitle = (title) => {
-        if(title.length > 10) {
-            let newTitle = "";
-            for(let i = 0; i < 11; i++) {
-                newTitle += title[i];
-            }
-            newTitle += "...";
-            return newTitle;
-        }
-        return title;
-    }
-
     return (
         <div className='h-[calc(100%-64px)] py-4 border-2 border-black flex flex-wrap justify-center'>
-            {movies.map((movie) =>
+            {movies.length > 0 ? movies.map((movie) =>
                 <MovieCard
+                    key={movie._id}
                     imgSrc={movie.poster}
-                    title={limitMovieTitle(movie.title)}
                     genre={movie.genre}
                     imdbRating={movie.imdbRating}
                 />
-            )}
+            ) : <h3>Nothing to show...</h3>}
         </div>
     )
 }
