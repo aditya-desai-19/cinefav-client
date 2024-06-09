@@ -1,16 +1,23 @@
 //@ts-check
-import React, { useCallback } from 'react'
-import { Link } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import GenresDropDown from './GenresDropDown';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { clearMovies, addMovies } from '../redux/slices/movieSlice.js';
+import { signOut } from '../redux/slices/userSlice';
+import Cookies from 'js-cookie';
 
 const Navbar = () => {
+    const user = useSelector((state) => state.user.user);
+    const navigate = useNavigate();
     const { register, handleSubmit } = useForm();
     const dispatch = useDispatch();
 
+    useEffect(() => {
+        console.log({user})
+    },[]);
     const handleSearch = useCallback(async (data) => {
         try {
             const response = await axios.get("/api/movies/search", {
@@ -27,6 +34,12 @@ const Navbar = () => {
         if(e.key === "Enter") {
             handleSubmit(handleSearch)
         }
+    },[]);
+
+    const handleSignOut = useCallback(() => {
+        dispatch(signOut());
+        Cookies.remove('user');
+        navigate("/");
     },[]);
 
     return (
@@ -47,9 +60,18 @@ const Navbar = () => {
                     <button type='submit' className='hidden' />
                 </form>
                 <li>
-                    <Link to={"/signin"}>
-                        <button className='rounded-lg p-2 bg-blue-400 h-10 text-white'>Sign In</button>
-                    </Link>
+                    {(user && Object.keys(user).length) ?
+                        <button 
+                            className='rounded-lg p-2 bg-red-400 h-10 text-white'
+                            onClick={handleSignOut}
+                            >
+                            Sign Out
+                        </button>
+                        :
+                        <Link to={"/signin"}>
+                            <button className='rounded-lg p-2 bg-blue-400 h-10 text-white'>Sign In</button>
+                        </Link>
+                    }
                 </li>
             </ul>
         </div>

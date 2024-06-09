@@ -16,6 +16,7 @@ const Movies = () => {
     const callMoviesApi = async () => {
         try {
             const response = await axios.get("/api/movies");
+            console.info({response})
             dispatch(clearMovies());
             dispatch(addMovies(response.data.movies || []));
         } catch (error) {

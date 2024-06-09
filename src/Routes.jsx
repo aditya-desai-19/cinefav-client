@@ -12,8 +12,12 @@ const router = createBrowserRouter([
         errorElement: <Error />,
         children: [
             {
+                path: '/signup',
+                element: <SignIn isSignIn={false}/>,
+            },
+            {
                 path: '/signin',
-                element: <SignIn />,
+                element: <SignIn isSignIn={true}/>,
             },
             {
                 path: '/movies',
