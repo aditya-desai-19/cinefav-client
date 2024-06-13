@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearMovies, addMovies } from '../redux/slices/movieSlice.js';
 import { signOut } from '../redux/slices/userSlice';
 import Cookies from 'js-cookie';
+import { Heart } from "react-feather";
 
 const Navbar = () => {
     const user = useSelector((state) => state.user.user);
@@ -49,6 +50,7 @@ const Navbar = () => {
                 <GenresDropDown />
             </div>
             <ul className="flex justify-center list-none">
+                {user && <li className='text-center mx-2 my-2'><Heart size={30} color='white'/></li>}
                 <form className='mx-2' onSubmit={handleSubmit(handleSearch)}>
                     <input 
                         type='text' 
