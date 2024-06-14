@@ -50,7 +50,11 @@ const Navbar = () => {
                 <GenresDropDown />
             </div>
             <ul className="flex justify-center list-none">
-                {user && <li className='text-center mx-2 my-2'><Heart size={30} color='white'/></li>}
+                {user &&
+                    <Link to={"/watchlist"}>
+                        <li className='text-center mx-2 my-2'><Heart size={30} color='white' /></li>
+                    </Link>
+                }
                 <form className='mx-2' onSubmit={handleSubmit(handleSearch)}>
                     <input 
                         type='text' 

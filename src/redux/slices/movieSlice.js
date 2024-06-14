@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    movies: []
+    movies: [],
+    watchlistMovies: []
 }
 
 const movieSlice = createSlice({
@@ -11,12 +12,18 @@ const movieSlice = createSlice({
         addMovies: (state, action) => {
             state.movies = action.payload
         },
+        addWatchlistMovies: (state, action) => {
+            state.watchlistMovies = action.payload
+        },
         clearMovies: (state) => {
             state.movies = []
+        },
+        clearWatchlistMovies: (state) => {
+            state.watchlistMovies = []
         }
     },
 });
 
-export const { addMovies, clearMovies } = movieSlice.actions;
+export const { addMovies, clearMovies, addWatchlistMovies, clearWatchlistMovies } = movieSlice.actions;
 
 export default movieSlice.reducer;
