@@ -6,14 +6,29 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addMovies, clearMovies } from '../redux/slices/movieSlice';
 
 const Movies = () => {
+    const [filteredMovies, setFilteredMovies] = useState([]);
+
     const movies = useSelector((state) => state.movie.movies);
     const currentUser = useSelector(state => state.user.user);
+    const genre = useSelector(state => state.genre.genre);
 
-    const dispatch = useDispatch();
     
+    const dispatch = useDispatch();
+
     useEffect(() => {
         callMoviesApi()
     }, []);
+    
+    useEffect(() => {
+        if(genre === "default") {
+            setFilteredMovies(movies);
+        } else {
+            //converting each movie genre to lowercase string then converting it to array and then for each substring removing
+            //empty spaces and then checking whether the selected genre is present or not
+            const filteredMoviesByGenre = movies.filter(m => m.genre.toLowerCase().split(",").map(x => x.trim()).includes(genre));
+            setFilteredMovies(filteredMoviesByGenre);
+        }
+    }, [genre]);
 
     const callMoviesApi = async () => {
         try {
@@ -21,6 +36,7 @@ const Movies = () => {
             console.info({response})
             dispatch(clearMovies());
             dispatch(addMovies(response.data.movies || []));
+            setFilteredMovies(response.data.movies || []);
         } catch (error) {
             console.log({ error })
         }
@@ -44,7 +60,7 @@ const Movies = () => {
 
     return (
         <div className='h-[calc(100%-64px)] py-4 border-2 border-black flex flex-wrap justify-center'>
-            {movies.length > 0 ? movies.map((movie) =>
+            {filteredMovies.length > 0 ? filteredMovies.map((movie) =>
                 <MovieCard
                     key={movie._id}
                     imgSrc={movie.poster}

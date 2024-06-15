@@ -44,9 +44,9 @@ const Navbar = () => {
     },[]);
 
     return (
-        <div className="flex justify-between p-2 h-16">
+        <div className="flex justify-between items-center p-2 h-16">
             <div className='flex'>
-                <h2 className="text-white text-2xl mx-2">Cinefav</h2>
+                <h2 className="text-white text-2xl mx-2 my-1">Cinefav</h2>
                 <GenresDropDown />
             </div>
             <ul className="flex justify-center list-none">
@@ -58,7 +58,7 @@ const Navbar = () => {
                 <form className='mx-2' onSubmit={handleSubmit(handleSearch)}>
                     <input 
                         type='text' 
-                        className='text-white h-10 border-2 border-gray-300 bg-black rounded-lg p-2' 
+                        className='text-white h-10 border-2 border-gray-300 bg-black rounded-lg px-2 my-1 mx-2' 
                         placeholder='Search...'
                         {...register("searchText")}
                         onKeyDown={handleKeyDown}
@@ -68,14 +68,14 @@ const Navbar = () => {
                 <li>
                     {(user && Object.keys(user).length) ?
                         <button 
-                            className='rounded-lg p-2 bg-red-400 h-10 text-white'
+                            className='rounded-lg px-2 bg-red-400 h-btn-height mx-2 my-1 text-white'
                             onClick={handleSignOut}
                             >
                             Sign Out
                         </button>
                         :
                         <Link to={"/signin"}>
-                            <button className='rounded-lg p-2 bg-blue-400 h-10 text-white'>Sign In</button>
+                            <button className='rounded-lg px-2 bg-blue-400 h-btn-height mx-2 my-1 text-white'>Sign In</button>
                         </Link>
                     }
                 </li>

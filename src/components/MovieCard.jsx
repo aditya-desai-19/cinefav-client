@@ -28,7 +28,7 @@ const MovieCard = ({ imgSrc, genre, imdbRating, addMovieToWatchlist }) => {
                         <button className='m-2' title='Add to watchlist' onClick={addMovieToWatchlist}><PlusCircle size={30} /></button>
                         <h3 className='m-2 flex'><Star size={25} color='yellow'/><span className='mx-2 text-xl'>{imdbRating}</span></h3>
                     </div>
-                    <p className='m-2'>{"Action"}</p>
+                    <p className='m-2'>{genre}</p>
                 </div>}
         </div>
     )

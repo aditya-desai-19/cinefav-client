@@ -17,6 +17,7 @@ export default {
         '80p': '80%',
         '90p': '90%',
         '100p': '100%',
+        'btn-height': '35px'
       },
       colors: {
         'blackbg': 'rgba(0, 0, 0, 0.9)',

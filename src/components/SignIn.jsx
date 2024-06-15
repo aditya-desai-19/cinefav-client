@@ -43,6 +43,7 @@ const SignIn = ({ isSignIn }) => {
                         }
                     }
                 } else {
+                    alert("Something went wrong");
                     navigate("/signin");
                 }
             }
@@ -81,7 +82,7 @@ const SignIn = ({ isSignIn }) => {
                     placeholder='Password'
                 />
                 <button type='submit' className='bg-blue-600 p-2 m-1 text-white w-24 rounded-lg my-4'>{isSignIn ? "Sign In" : "Sign Up"}</button>
-                <p className='text-white'>Already a user? <span className='cursor-pointer' onClick={toggleSignIn}>{!isSignIn ? "Sign In" : "Sign Up"}</span></p>
+                <p className='text-white'>{isSignIn ? "New user? " : "Already a user? "}<span className='cursor-pointer' onClick={toggleSignIn}>{!isSignIn ? "Sign In" : "Sign Up"}</span></p>
             </form>
         </div>
     )
