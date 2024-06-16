@@ -35,7 +35,7 @@ const SignIn = ({ isSignIn }) => {
                                 id: decoded["id"],
                                 name: decoded["name"],
                             };
-                            Cookies.set('user', JSON.stringify(user), {expires: decoded.exp});
+                            Cookies.set('user', JSON.stringify(user), {expires: 1});
                             dispatch(signIn(user))
                             navigate("/movies")
                         } else {

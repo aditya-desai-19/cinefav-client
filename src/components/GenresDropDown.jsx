@@ -1,7 +1,7 @@
 //@ts-check
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { changeGenre } from '../redux/slices/genreSlice';
+import { changeGenre } from '../redux/slices/filterSlice';
 
 const GenresDropDown = () => {
     const dispatch = useDispatch();
