@@ -2,7 +2,14 @@
 import React, { useCallback, useState } from 'react';
 import { Star, Heart } from 'react-feather'
 
-const MovieCard = ({ imgSrc, genre, imdbRating, isWatchlisted, addMovieToWatchlist, removeFromWatchlist }) => {
+const MovieCard = ({ 
+    imgSrc,
+    genre, 
+    imdbRating, 
+    isWatchlisted, 
+    addMovieToWatchlist, 
+    removeFromWatchlist
+}) => {
     const [isHover, setIsHover] = useState(false);
     const [isMovieWatchlisted, setIsMovieWatchlisted] = useState(isWatchlisted);
 

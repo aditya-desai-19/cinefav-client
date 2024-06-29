@@ -2,9 +2,11 @@
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { addWatchlistMovies, clearWatchlistMovies } from '../redux/slices/movieSlice';
+import { addWatchlistMovies, clearWatchlistMovies, removeWatchlistMovieById } from '../redux/slices/movieSlice';
 import MovieCard from './MovieCard';
 import { toast } from 'react-hot-toast';
+import axiosInstance from '../utils/api';
+import WarningPopup from './WarningPopup';
 
 const Watchlist = () => {
     const [loading, setLoading] = useState(false);
@@ -32,7 +34,7 @@ const Watchlist = () => {
                 return;
             }
             const apiUrl = `/api/watchlist?id=${currentUser?.id}`;
-            const response = await axios.get(apiUrl);
+            const response = await axiosInstance.get(apiUrl);
             if(response.status === 200) {
                 dispatch(clearWatchlistMovies());
                 dispatch(addWatchlistMovies(response.data.watchlist.movies || []));
@@ -47,16 +49,58 @@ const Watchlist = () => {
         }
     }, [currentUser, clearWatchlistMovies, addWatchlistMovies, filteredMovies, loading]);
 
+    const removeMovieFromWatchlist = useCallback(async (movie) => {
+        try {
+            if (JSON.stringify(currentUser) === "{}" || currentUser === null) {
+                toast.error("Current user does not exist", { duration: 3000, position: "top-right" });
+                return;
+            }
+            const body = {
+                movieId: movie._id,
+                id: currentUser?.id
+            };
+            const response = await axiosInstance.put("/api/watchlist", body);
+            if (response.status === 200) {
+                toast.success("Successfully removed movie from watchlist", { duration: 3000, position: "top-right" });
+            } else {
+                toast.error("Something went wrong");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }, [currentUser]);
+
+    const showWarningToast = useCallback((movie) => {
+        toast.custom(
+            (t) => (
+                <WarningPopup
+                    message={"Are you sure you want to remove movie from watchlist?"}
+                    onSuccess={() => {
+                        removeMovieFromWatchlist(movie)
+                        dispatch(removeWatchlistMovieById(movie._id || ""));
+                        toast.dismiss(t.id);
+                    }}
+                    onDismiss={() => {
+                        toast.dismiss(t.id);
+                    }}
+                />
+            ),
+            {
+                duration: Infinity, 
+            }
+        );
+    }, [removeMovieFromWatchlist]);
+
 
     return (
-        <div>
+        <div className='h-full w-full overflow-y-auto'>
             {currentUser ?
-                <>
-                    <h2 className='text-white text-3xl m-4'>My Watchlist</h2>
+                <div className='flex flex-col h-full w-full'>
+                    <h2 className='text-white text-3xl my-2 mx-4 max-sm:text-center'>My Watchlist</h2>
                     {loading ? 
                         <h2 className='text-2xl text-white text-center'>Loading...</h2>
                         :
-                        <div className='flex flex-wrap m-4'>
+                        <div className='h-full flex flex-wrap m-4 max-md:justify-between max-sm:justify-center'>
                             {filteredMovies.length > 0 ?
                                 filteredMovies.map(movie => {
                                     return (
@@ -65,7 +109,8 @@ const Watchlist = () => {
                                             imgSrc={movie.poster}
                                             genre={movie.genre}
                                             imdbRating={movie.imdbRating}
-                                            // addMovieToWatchlist={() => addMovieToWatchlist(movie)}
+                                            isWatchlisted={true}
+                                            removeFromWatchlist={() => showWarningToast(movie)}
                                         />
                                     )
                                 })
@@ -74,7 +119,7 @@ const Watchlist = () => {
                             }
                         </div>
                     }
-                </>
+                </div>
                 :
                 <h2 className='text-white text-5xl text-center'>Login to view the watchlist</h2>
             }

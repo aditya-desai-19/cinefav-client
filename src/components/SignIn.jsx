@@ -28,16 +28,16 @@ const SignIn = ({ isSignIn }) => {
                 if (isSignIn) {
                     const token = response.data.token;
                     if(token) {
+                        Cookies.set('token', token, { expires: 1});
                         const decoded = jwtDecode(token);
-                        console.info({decoded})
                         if(decoded && Object.keys(decoded).length) {
                             const user = {
-                                id: decoded["id"],
-                                name: decoded["name"],
+                                id: decoded?.user?.id,
+                                name: decoded?.user?.name,
                             };
                             Cookies.set('user', JSON.stringify(user), {expires: 1});
                             dispatch(signIn(user))
-                            navigate("/movies")
+                            navigate("/")
                         } else {
                             throw new Error("Some error occurred");
                         }
@@ -62,27 +62,36 @@ const SignIn = ({ isSignIn }) => {
 
     return (
         <div className='flex justify-center items-center h-full'>
-            <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col justify-center items-center bg-formbg  border-2 border-gray-400 w-1/4 p-2 h-70p'>
+            <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col justify-between items-center bg-formbg  border-2 border-gray-400 w-40p p-2 h-50p max-md:w-70p max-md:h-50p max-xsm:h-40p'>
                 <h2 className='text-2xl text-white my-4'>{isSignIn ? "Sign In" : "Sign Up"}</h2>
-                {!isSignIn && <input
-                    {...register("username", { required: true })}
-                    className='border-2 border-gray-400 w-3/4 my-4'
-                    placeholder='Username'
-                />}
-                <input
-                    type={`${isSignIn ? 'text' : 'email'}`}
-                    {...register(`${isSignIn ? 'userNameOrEmail' : 'email'}`, { required: true })}
-                    className='border-2 border-gray-400 w-3/4 my-4'
-                    placeholder='Email'
-                />
-                <input
-                    type='password'
-                    {...register("password", { required: true, minLength: 6 })}
-                    className='border-2 border-gray-400 w-3/4 my-4'
-                    placeholder='Password'
-                />
-                <button type='submit' className='bg-blue-600 p-2 m-1 text-white w-24 rounded-lg my-4'>{isSignIn ? "Sign In" : "Sign Up"}</button>
-                <p className='text-white'>{isSignIn ? "New user? " : "Already a user? "}<span className='cursor-pointer' onClick={toggleSignIn}>{!isSignIn ? "Sign In" : "Sign Up"}</span></p>
+                <div className='w-full flex flex-col items-center'>
+                    {!isSignIn && <input
+                        {...register("username", { required: true })}
+                        className='border-2 border-gray-400 w-3/4 my-4'
+                        placeholder='Username'
+                    />}
+                    <input
+                        type={`${isSignIn ? 'text' : 'email'}`}
+                        {...register(`${isSignIn ? 'userNameOrEmail' : 'email'}`, { required: true })}
+                        className='border-2 border-gray-400 w-3/4 my-4'
+                        placeholder='Email'
+                    />
+                    <input
+                        type='password'
+                        {...register("password", { required: true, minLength: 6 })}
+                        className='border-2 border-gray-400 w-3/4 my-4'
+                        placeholder='Password'
+                    />
+                </div>
+                <div className='w-full flex flex-col items-center'>
+                    <button type='submit' className='bg-blue-600 p-2 m-1 text-white w-24 rounded-lg my-4'>{isSignIn ? "Sign In" : "Sign Up"}</button>
+                    <p className='text-white'>
+                        {isSignIn ? "New user? " : "Already a user? "}
+                        <span className='cursor-pointer' onClick={toggleSignIn}>
+                            {!isSignIn ? "Sign In" : "Sign Up"}
+                        </span>
+                    </p>
+                </div>
             </form>
         </div>
     )
