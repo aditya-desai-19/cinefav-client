@@ -7,6 +7,7 @@ import { jwtDecode } from 'jwt-decode'
 import Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux'
 import { signIn } from '../redux/slices/userSlice'
+import { toast } from 'react-hot-toast'
 
 const SignIn = ({ isSignIn }) => {
     const navigate = useNavigate();
@@ -24,7 +25,7 @@ const SignIn = ({ isSignIn }) => {
             const api = `/api/users/${isSignIn ? 'signin' : 'signup'}`;
             setIsFormSubmit(true);
             const response = await axios.post(api, data);
-            if (response.status === 200) {
+            if (response.status === 200 || response.status === 201) {
                 if (isSignIn) {
                     const token = response.data.token;
                     if(token) {
@@ -34,16 +35,18 @@ const SignIn = ({ isSignIn }) => {
                             const user = {
                                 id: decoded?.user?.id,
                                 name: decoded?.user?.name,
+                                role: decoded?.user?.role
                             };
                             Cookies.set('user', JSON.stringify(user), {expires: 1});
                             dispatch(signIn(user))
-                            navigate("/")
+                            navigate("/movies")
                         } else {
+                            toast.error("Some error occurred");
                             throw new Error("Some error occurred");
                         }
                     }
                 } else {
-                    alert("Something went wrong");
+                    toast.success("Successfully signed up");
                     navigate("/signin");
                 }
             }
@@ -66,7 +69,7 @@ const SignIn = ({ isSignIn }) => {
                 <h2 className='text-2xl text-white my-4'>{isSignIn ? "Sign In" : "Sign Up"}</h2>
                 <div className='w-full flex flex-col items-center'>
                     {!isSignIn && <input
-                        {...register("username", { required: true })}
+                        {...register("userName", { required: true })}
                         className='border-2 border-gray-400 w-3/4 my-4'
                         placeholder='Username'
                     />}

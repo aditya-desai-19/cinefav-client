@@ -4,6 +4,8 @@ import App from "./App.jsx";
 import Error from "./components/Error.jsx";
 import SignIn from "./components/SignIn.jsx";
 import Watchlist from "./components/Watchlist.jsx";
+import Dashboard from "./components/Dashboard.jsx";
+import Movies from "./components/Movies.jsx";
 
 const router = createBrowserRouter([
     {
@@ -11,6 +13,10 @@ const router = createBrowserRouter([
         element: <App />,
         errorElement: <Error />,
         children: [
+            {
+                path: '/movies',
+                element: <Movies />,
+            },
             {
                 path: '/signup',
                 element: <SignIn isSignIn={false}/>,
@@ -22,9 +28,13 @@ const router = createBrowserRouter([
             {
                 path: '/watchlist',
                 element: <Watchlist />,
-            }
+            },
+            {
+                path: '/dashboard',
+                element: <Dashboard />,
+            } 
         ]
-    }, 
+    }
 ]);
 
 export default router;

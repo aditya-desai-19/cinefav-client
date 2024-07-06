@@ -40,7 +40,7 @@ const Navbar = () => {
     },[signOut]);
     
     return (
-        <div className="flex bg-navbg max-sm:flex-col justify-between items-center p-2 h-16 w-full">
+        <div className="flex bg-gray-900 max-sm:flex-col justify-between items-center p-2 h-16 w-full">
             <div className='flex justify-between max-sm:w-full'>
                 <div className='flex'>
                     <h2 className="text-white text-2xl mx-2 my-1">Cinefav</h2>

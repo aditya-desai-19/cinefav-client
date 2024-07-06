@@ -7,6 +7,7 @@ import MovieCard from './MovieCard';
 import { toast } from 'react-hot-toast';
 import axiosInstance from '../utils/api';
 import WarningPopup from './WarningPopup';
+import { callWatchlistApi } from '../utils/movieApi';
 
 const Watchlist = () => {
     const [loading, setLoading] = useState(false);
@@ -18,7 +19,7 @@ const Watchlist = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        callWatchlistApi();
+        getWatchlist();
     }, [currentUser]);
 
     useEffect(() => {
@@ -26,28 +27,19 @@ const Watchlist = () => {
         setFilteredMovies(movies);
     }, [searchText, watchlistMovies]);
 
-    const callWatchlistApi = useCallback(async() => {
+    const getWatchlist = useCallback(async() => {
         try {
             setLoading(true);
-            if(!currentUser && JSON.parse(currentUser) === "{}") {
-                toast.error("Something went wrong");
-                return;
-            }
-            const apiUrl = `/api/watchlist?id=${currentUser?.id}`;
-            const response = await axiosInstance.get(apiUrl);
-            if(response.status === 200) {
-                dispatch(clearWatchlistMovies());
-                dispatch(addWatchlistMovies(response.data.watchlist.movies || []));
-                setFilteredMovies(response.data.watchlist.movies || []);
-            } else {
-                alert("Something went wrong");
-            }
+            const movies = await callWatchlistApi(currentUser?.id);
+            dispatch(clearWatchlistMovies());
+            dispatch(addWatchlistMovies(movies));
+            setFilteredMovies(movies);
         } catch (error) {
             console.log(error);
         } finally {
             setLoading(false);
         }
-    }, [currentUser, clearWatchlistMovies, addWatchlistMovies, filteredMovies, loading]);
+    }, [currentUser, clearWatchlistMovies, addWatchlistMovies, filteredMovies, loading, callWatchlistApi]);
 
     const removeMovieFromWatchlist = useCallback(async (movie) => {
         try {

@@ -8,10 +8,12 @@ import { clearWatchlistMovies, addWatchlistMovies } from '../redux/slices/movieS
 import { toast } from 'react-hot-toast';
 import axiosInstance from '../utils/api';
 import WarningPopup from './WarningPopup';
+import { callMovieApi, callWatchlistApi } from '../utils/movieApi';
 
-const Movies = ({currentUser = {}}) => {
+const Movies = () => {
     const [filteredMovies, setFilteredMovies] = useState([]);
 
+    const currentUser = useSelector((state) => state.user.user);
     const movies = useSelector((state) => state.movie.movies);
     const watchlistedMovies = useSelector((state) => state.movie.watchlistMovies);
     const genre = useSelector((state) => state.filter.genre);
@@ -20,11 +22,11 @@ const Movies = ({currentUser = {}}) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        callMoviesApi()
+        getMovies()
     }, []);
 
     useEffect(() => {
-        callWatchlistApi();
+        getWatchlist();
     }, []);
 
     useEffect(() => {
@@ -43,31 +45,26 @@ const Movies = ({currentUser = {}}) => {
         setFilteredMovies(filteredMoviesBySearchText);
     }, [searchText]);
 
-    const callWatchlistApi = useCallback(async () => {
+    const getWatchlist = useCallback(async () => {
         try {
-            const apiUrl = `/api/watchlist?id=${currentUser?.id}`;
-            const response = await axios.get(apiUrl);
-            if (response.status === 200) {
-                dispatch(clearWatchlistMovies());
-                dispatch(addWatchlistMovies(response.data.watchlist.movies || []));
-            } else {
-                alert("Something went wrong");
-            }
+            const movies = await callWatchlistApi(currentUser?.id);
+            dispatch(clearWatchlistMovies());
+            dispatch(addWatchlistMovies(movies));
         } catch (error) {
             console.log(error);
         }
-    }, []);
+    }, [clearWatchlistMovies, addWatchlistMovies, callWatchlistApi]);
 
-    const callMoviesApi = useCallback(async () => {
+    const getMovies = useCallback(async () => {
         try {
-            const response = await axiosInstance.get("/api/movies");
+            const movies = await callMovieApi();
             dispatch(clearMovies());
-            dispatch(addMovies(response.data.movies || []));
-            setFilteredMovies(response.data.movies || []);
+            dispatch(addMovies(movies));
+            setFilteredMovies(movies);
         } catch (error) {
             console.log({ error })
         }
-    }, [clearMovies, addMovies, filteredMovies]);
+    }, [clearMovies, addMovies, filteredMovies, callMovieApi]);
 
     const addMovieToWatchlist = useCallback(async (movie) => {
         try {
@@ -140,7 +137,7 @@ const Movies = ({currentUser = {}}) => {
 
     return (
         <>
-            {(JSON.stringify(currentUser) !== "{}" || currentUser) ?
+            {(currentUser?.id.length && currentUser?.role === "NORMAL") ?
                 <div className='h-full py-4 border-2 border-black flex flex-wrap overflow-y-auto justify-evenly max-md:justify-between max-sm:justify-center'>
                     {filteredMovies.length > 0 ? filteredMovies.map((movie) =>
                         <MovieCard
@@ -155,7 +152,7 @@ const Movies = ({currentUser = {}}) => {
                     ) : <h2 className='text-2xl text-white'>Nothing to show...</h2>}
                 </div>
                 :
-                <h2 className='text-2xl text-white'>Login first...</h2>
+                <h2 className='text-2xl text-white text-center'>{currentUser?.role === "ADMIN" ? "Unauthorized " : "Please login..."}</h2>
             }
         </>
     )
