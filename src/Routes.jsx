@@ -1,8 +1,9 @@
 //@ts-check
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
-import Error from "./pages/Error.jsx";
+import Error from "./components/Error.jsx";
 import SignIn from "./components/SignIn.jsx";
+import Watchlist from "./components/Watchlist.jsx";
 
 const router = createBrowserRouter([
     {
@@ -11,8 +12,16 @@ const router = createBrowserRouter([
         errorElement: <Error />,
         children: [
             {
+                path: '/signup',
+                element: <SignIn isSignIn={false}/>,
+            },
+            {
                 path: '/signin',
-                element: <SignIn />,
+                element: <SignIn isSignIn={true}/>,
+            },
+            {
+                path: '/watchlist',
+                element: <Watchlist />,
             }
         ]
     }, 
