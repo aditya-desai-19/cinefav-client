@@ -1,14 +1,15 @@
 //@ts-check
 import React, { useCallback, useEffect } from 'react'
 import Navbar from './components/Navbar'
-import { Outlet } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { Outlet, useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import Cookies from 'js-cookie'
 import { signIn } from './redux/slices/userSlice.js'
 import { Toaster } from 'react-hot-toast';
 
 const App = () => {
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	const updateUser = useCallback((user) => {
 		try {
@@ -23,6 +24,7 @@ const App = () => {
 	useEffect(() => {
 		const user = Cookies.get('user');
 		updateUser(user);
+		navigate("/movies");
 	}, []);
 
 	return (
