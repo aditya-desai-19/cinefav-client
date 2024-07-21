@@ -1,5 +1,4 @@
 //@ts-check
-import axios from 'axios';
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import MovieCard from './MovieCard';
 import { useDispatch, useSelector } from 'react-redux';
@@ -68,7 +67,7 @@ const Movies = () => {
 
     const addMovieToWatchlist = useCallback(async (movie) => {
         try {
-            if (JSON.stringify(currentUser) === "{}" || currentUser === null) {
+            if (currentUser?.id === null) {
                 toast.error("Current user does not exist", { duration: 3000, position: "top-right" });
                 return;
             }
@@ -87,7 +86,7 @@ const Movies = () => {
 
     const removeMovieFromWatchlist = useCallback(async (movie) => {
         try {
-            if (JSON.stringify(currentUser) === "{}" || currentUser === null) {
+            if (currentUser?.id === null) {
                 toast.error("Current user does not exist", { duration: 3000, position: "top-right" });
                 return;
             }
@@ -128,16 +127,12 @@ const Movies = () => {
     }, [removeMovieFromWatchlist]);
 
     const watchlistedMovieIds = useMemo(() => {
-        const movieIds = [];
-        for(let i = 0; i < watchlistedMovies.length; i++) {
-            movieIds.push(watchlistedMovies[i]?._id);
-        }
-        return movieIds;
+        return watchlistedMovies.map(movie => movie._id);
     }, [watchlistedMovies]);
 
     return (
         <>
-            {(currentUser?.id.length && currentUser?.role === "NORMAL") ?
+            {(currentUser?.id.length && (currentUser?.role === "NORMAL" || currentUser?.role === "ADMIN")) ?
                 <div className='h-full py-4 border-2 border-black flex flex-wrap overflow-y-auto justify-evenly max-md:justify-between max-sm:justify-center'>
                     {filteredMovies.length > 0 ? filteredMovies.map((movie) =>
                         <MovieCard
@@ -145,6 +140,7 @@ const Movies = () => {
                             imgSrc={movie.poster}
                             genre={movie.genre}
                             imdbRating={movie.imdbRating}
+                            isAdmin={currentUser?.role === "ADMIN"}
                             isWatchlisted={watchlistedMovieIds.includes(movie._id)}
                             addMovieToWatchlist={() => addMovieToWatchlist(movie)}
                             removeFromWatchlist={() => showWarningToast(movie)}
@@ -152,7 +148,7 @@ const Movies = () => {
                     ) : <h2 className='text-2xl text-white'>Nothing to show...</h2>}
                 </div>
                 :
-                <h2 className='text-2xl text-white text-center'>{currentUser?.role === "ADMIN" ? "Unauthorized " : "Please login..."}</h2>
+                <h2 className='text-2xl text-white text-center'>{"Unauthorized"}</h2>
             }
         </>
     )

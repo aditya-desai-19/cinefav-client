@@ -86,7 +86,7 @@ const Watchlist = () => {
 
     return (
         <div className='h-full w-full overflow-y-auto'>
-            {currentUser ?
+            {currentUser?.role === "NORMAL" ?
                 <div className='flex flex-col h-full w-full'>
                     <h2 className='text-white text-3xl my-2 mx-4 max-sm:text-center'>My Watchlist</h2>
                     {loading ? 
@@ -113,7 +113,11 @@ const Watchlist = () => {
                     }
                 </div>
                 :
-                <h2 className='text-white text-5xl text-center'>Login to view the watchlist</h2>
+                <h2 className='text-white text-2xl text-center'>
+                    {currentUser?.role === "ADMIN" ?
+                        "Unauthorized" :
+                        "Login to view the watchlist"}
+                </h2>
             }
         </div>
     )
