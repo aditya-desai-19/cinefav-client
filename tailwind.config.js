@@ -17,7 +17,8 @@ export default {
         '80p': '80%',
         '90p': '90%',
         '100p': '100%',
-        'btn-height': '35px'
+        'btn-height': '35px',
+        'modal-height': '500px',
       },
       width: {
         '10p': '10%',

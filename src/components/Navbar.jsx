@@ -5,7 +5,7 @@ import GenresDropDown from './GenresDropDown';
 import { useDispatch, useSelector } from 'react-redux';
 import { signOut } from '../redux/slices/userSlice';
 import Cookies from 'js-cookie';
-import { Heart, Menu } from "react-feather";
+import { Heart, Menu, Grid } from "react-feather";
 import { toast } from 'react-hot-toast';
 import { changeFilterText } from '../redux/slices/filterSlice';
 
@@ -81,9 +81,14 @@ const Navbar = () => {
                 }
             </div>}
             <ul className="flex max-sm:hidden justify-center list-none">
-                {user &&
+                {user?.role === "NORMAL" &&
                     <Link to={"/watchlist"}>
                         <li className='text-center mx-2 my-2'><Heart size={30} color='white' /></li>
+                    </Link>
+                }
+                {user?.role === "ADMIN" &&
+                    <Link to={"/dashboard"}>
+                        <li className='text-center mx-2 my-2'><Grid size={30} color='white' /></li>
                     </Link>
                 }
                 <input 

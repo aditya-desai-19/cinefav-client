@@ -6,6 +6,7 @@ const MovieCard = ({
     imgSrc,
     genre, 
     imdbRating, 
+    isAdmin,
     isWatchlisted, 
     addMovieToWatchlist, 
     removeFromWatchlist
@@ -44,11 +45,13 @@ const MovieCard = ({
             {isHover &&
                 <div className='text-gray-100 p-2'>
                     <div className='flex text-gray-100 w-full'>
-                        {isMovieWatchlisted ? 
-                            <span title='Watchlisted' className='m-2 cursor-pointer' onClick={() => handleWatchlist(false)}><Heart size={30} color='red' fill='red'/></span> 
-                            :
-                            <span title='Add to watchlist' className='m-2 cursor-pointer' onClick={() => handleWatchlist(true)}><Heart size={30} color='white'/></span>
-                        }
+                        {!isAdmin && <>
+                            {isMovieWatchlisted ? 
+                                <span title='Watchlisted' className='m-2 cursor-pointer' onClick={() => handleWatchlist(false)}><Heart size={30} color='red' fill='red'/></span> 
+                                :
+                                <span title='Add to watchlist' className='m-2 cursor-pointer' onClick={() => handleWatchlist(true)}><Heart size={30} color='white'/></span>
+                            }
+                        </>}
                         <h3 className='m-2 flex'><Star size={25} color='yellow' /><span className='mx-2 text-xl'>{imdbRating}</span></h3>
                     </div>
                     <p className='m-2'>{genre}</p>
