@@ -43,15 +43,14 @@ const Watchlist = () => {
 
     const removeMovieFromWatchlist = useCallback(async (movie) => {
         try {
-            if (JSON.stringify(currentUser) === "{}" || currentUser === null) {
+            if (!currentUser?.id) {
                 toast.error("Current user does not exist", { duration: 3000, position: "top-right" });
                 return;
             }
             const body = {
-                movieId: movie._id,
-                id: currentUser?.id
+                movieId: movie._id
             };
-            const response = await axiosInstance.put("/api/watchlist", body);
+            const response = await axiosInstance.put(`/api/watchlist${currentUser?.id}`, body);
             if (response.status === 200) {
                 toast.success("Successfully removed movie from watchlist", { duration: 3000, position: "top-right" });
             } else {

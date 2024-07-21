@@ -1,5 +1,5 @@
 //@ts-check
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import GenresDropDown from './GenresDropDown';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,10 +11,15 @@ import { changeFilterText } from '../redux/slices/filterSlice';
 
 const Navbar = () => {
     const [ showMenu, setShowMenu ] = useState(false);
+    const [currentUrl, setCurrentUrl] = useState("");
 
     const user = useSelector((state) => state.user.user);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        setCurrentUrl(window.location.href)
+    }, [window.location.href])
 
     const toggleMenu = useCallback(() => {
         setShowMenu(!showMenu);
@@ -38,13 +43,17 @@ const Navbar = () => {
         toast.success("Successfully signed out");
         navigate("/");
     },[signOut]);
+
+    const navigateToHome = useCallback(() => {
+        navigate("/movies");
+    }, []);
     
     return (
         <div className="flex bg-gray-900 max-sm:flex-col justify-between items-center p-2 h-16 w-full">
             <div className='flex justify-between max-sm:w-full'>
                 <div className='flex'>
-                    <h2 className="text-white text-2xl mx-2 my-1">Cinefav</h2>
-                    {user && <GenresDropDown />}
+                    <h2 className="text-white text-2xl mx-2 my-1 cursor-pointer" onClick={navigateToHome}>Cinefav</h2>
+                    {(user && currentUrl.includes("/movies"))  && <GenresDropDown />}
                 </div>
                 <div className='hidden max-sm:block'>
                     <button onClick={toggleMenu}><Menu size={30} color='white' /></button>
@@ -56,12 +65,13 @@ const Navbar = () => {
                         <button className='m-2' onClick={toggleMenu}><Heart size={30} color='white' /></button>
                     </Link>
                 }
-                <input
-                    type='text'
-                    className='text-white h-10 w-1/2 border-2 border-gray-300 bg-black rounded-lg px-2 m-2'
-                    placeholder='Search...'
-                    onKeyDown={handleKeyDown}
-                />
+                {currentUrl.includes("/movies") &&
+                    <input
+                        type='text'
+                        className='text-white h-10 w-1/2 border-2 border-gray-300 bg-black rounded-lg px-2 m-2'
+                        placeholder='Search...'
+                        onKeyDown={handleKeyDown}
+                    />}
                 {(user && Object.keys(user).length) ?
                     <button
                         className='rounded-lg px-2 bg-red-400 h-btn-height w-1/4 m-2 text-white'
@@ -91,12 +101,13 @@ const Navbar = () => {
                         <li className='text-center mx-2 my-2'><Grid size={30} color='white' /></li>
                     </Link>
                 }
-                <input 
-                    type='text' 
-                    className='text-white h-10 border-2 border-gray-300 bg-black rounded-lg px-2 my-1 mx-2' 
-                    placeholder='Search...'
-                    onKeyDown={handleKeyDown}
-                    />
+                {currentUrl.includes("/movies") &&
+                    <input
+                        type='text'
+                        className='text-white h-10 border-2 border-gray-300 bg-black rounded-lg px-2 my-1 mx-2'
+                        placeholder='Search...'
+                        onKeyDown={handleKeyDown}
+                    />}
                 <li>
                     {(user && Object.keys(user).length) ?
                         <button 
