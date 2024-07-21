@@ -11,7 +11,7 @@ const callMovieApi = async () => {
 
 const callWatchlistApi = async (userId) => {
     try {
-        const apiUrl = `/api/watchlist?id=${userId}`;
+        const apiUrl = `/api/watchlist/${userId}`;
         const response = await axiosInstance.get(apiUrl);
         return response.data.watchlist.movies || [];
     } catch (error) {
